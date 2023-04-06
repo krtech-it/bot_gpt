@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import DeclarativeBase
 import sqlalchemy.exc
 from sqlalchemy import create_engine
@@ -18,6 +18,13 @@ class Person(Base):
     id = Column(Integer, index=True, primary_key=True)
     id_user = Column(Integer, index=True, unique=True)
     name = Column(String)
+
+
+class Room(Base):
+    __tablename__ = 'rooms'
+    id = Column(Integer, primary_key=True)
+    title = Column(String(100), nullable=False)
+    owner_id = Column(Integer, ForeignKey('people.id'))
 
 
 class DataBaseWork:
@@ -48,3 +55,9 @@ class DataBaseWork:
             db.add(user)
             db.commit()
         return cls.get_user(user_id)
+
+    @classmethod
+    def get_all_rooms_user(cls, user_id):
+        with Session(autoflush=False, bind=engine) as db:
+            rooms = db.query(Room).filter(Room.owner_id == user_id).all()
+        return rooms
