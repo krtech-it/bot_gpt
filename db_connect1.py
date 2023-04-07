@@ -63,7 +63,8 @@ class DataBaseWork:
                 Person.id,
                 Person.id_user,
                 Person.name,
-                Room.title
+                Room.title,
+                Room.id
             ).join(Room).filter(Person.id_user==user_id).all()
         return rooms
 
